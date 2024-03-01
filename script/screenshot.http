@@ -1,0 +1,7 @@
+###
+POST https://localhost:8080/screenshot
+Content-Type: application/json
+
+{
+  "url": "https://gitee.com/phaeris/scindapsus"
+}

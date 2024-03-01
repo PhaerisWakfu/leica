@@ -1,0 +1,12 @@
+logging:
+  level:
+    com.wehichina.leica: debug
+
+springfox:
+  documentation:
+    enabled: true
+
+#leica:
+#  web-driver:
+#    driver-path: /xxx
+#    binary-path: /xxx
