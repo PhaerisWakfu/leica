@@ -13,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.coordinates.WebDriverCoordsProvider;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
@@ -21,7 +22,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author wyh
@@ -30,8 +30,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebDriverContext {
-
-    private static final Long WAIT_SEC = 1L;
 
     private static final String SCRIPT_GET_BODY_HEIGHT = "return document.body.offsetHeight";
 
@@ -46,26 +44,28 @@ public class WebDriverContext {
      * @param url 页面url
      * @param os  输出流
      */
-    public static void screenshot(@NonNull String url, OutputStream os) {
-        screenshot(url, null, os);
+    public static void screenshot(@NonNull String url, @Nullable Integer width, @Nullable Integer height, OutputStream os) {
+        screenshot(url, width, height, null, os);
     }
 
     /**
      * 截图
      *
-     * @param url 页面url
-     * @param ele 指定元素
-     * @param os  输出流
+     * @param url    页面url
+     * @param width  宽
+     * @param height 高
+     * @param ele    指定元素
+     * @param os     输出流
      */
-    public static void screenshot(@NonNull String url, String ele, OutputStream os) {
+    public static void screenshot(@NonNull String url, Integer width, Integer height, String ele, OutputStream os) {
 
         long start = System.currentTimeMillis();
 
         //这里每次新建driver(处理并发调用下使用同一个实例会互相影响宽高的问题)
         WebDriver driver = getDriver();
 
-        int w = 1920;
-        int h = 1080;
+        int w = Optional.ofNullable(width).orElse(1920);
+        int h = Optional.ofNullable(height).orElse(1080);
 
         try {
 
@@ -75,21 +75,20 @@ public class WebDriverContext {
             //请求页面
             driver.get(url);
 
-            //等待页面加载
-            TimeUnit.SECONDS.sleep(WAIT_SEC);
+            //如果滚动截图计算设置真实高度
+            if (height == null) {
+                String script = Optional.ofNullable(ele)
+                        .map(e -> String.format(SCRIPT_GET_ELE_HEIGHT, e))
+                        .orElse(SCRIPT_GET_BODY_HEIGHT);
+                Long offsetHeight = (Long) ((JavascriptExecutor) driver).executeScript(script);
+                h = offsetHeight != null && offsetHeight > 0 ? offsetHeight.intValue() + 100 : h;
+                driver.manage().window().setSize(new Dimension(w, h));
+            }
 
-            //计算设置真实高度
-            String script = Optional.ofNullable(ele)
-                    .map(e -> String.format(SCRIPT_GET_ELE_HEIGHT, e))
-                    .orElse(SCRIPT_GET_BODY_HEIGHT);
-            Long offsetHeight = (Long) ((JavascriptExecutor) driver).executeScript(script);
-            h = offsetHeight != null && offsetHeight > 0 ? offsetHeight.intValue() + 100 : h;
-            driver.manage().window().setSize(new Dimension(w, h));
-
-            //滚动截图
             AShot aShot = new AShot()
-                    .coordsProvider(new WebDriverCoordsProvider())
-                    .shootingStrategy(ShootingStrategies.viewportPasting(100));
+                    .coordsProvider(new WebDriverCoordsProvider());
+            //如果滚动截图设置滚动策略
+            Optional.ofNullable(height).ifPresent(x -> aShot.shootingStrategy(ShootingStrategies.viewportPasting(100)));
             BufferedImage image = Optional.ofNullable(ele)
                     .map(e -> aShot.takeScreenshot(driver, driver.findElement(By.cssSelector(e))))
                     .orElse(aShot.takeScreenshot(driver))
@@ -101,7 +100,6 @@ public class WebDriverContext {
             throw new ExternalException("截图失败", e);
         } finally {
             //因为是每次新建, 所以这里每次都关闭所有窗口关闭会话
-            driver.close();
             driver.quit();
         }
     }
@@ -123,6 +121,7 @@ public class WebDriverContext {
         chromeOptions.addArguments("lang=zh_CN.UTF-8");//中文
         chromeOptions.addArguments("--no-zygote");//处理僵尸进程
         chromeOptions.addArguments("--single-process");//开启单进程
+        chromeOptions.addArguments("--disable-cache");//禁用缓存
         return new ChromeDriver(chromeOptions);
     }
 }

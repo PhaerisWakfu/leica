@@ -1,7 +1,3 @@
-springfox:
-  documentation:
-    enabled: false
-
 #leica:
 #  web-driver:
 #    driver-path: /xxx

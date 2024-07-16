@@ -14,13 +14,12 @@
         <developer>
             <name>wyh</name>
             <email>243409312@qq.com</email>
-            <url>https://gitee.com/phaeris</url>
+            <url>https://github.com/PhaerisWakfu</url>
         </developer>
     </developers>
 
     <properties>
         <spring-boot.version>2.4.3</spring-boot.version>
-        <swagger.version>3.0.0</swagger.version>
         <selenium.version>3.9.1</selenium.version>
         <ashot.version>1.5.4</ashot.version>
 
@@ -41,12 +40,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-
             <!--tools-->
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
@@ -80,10 +73,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
