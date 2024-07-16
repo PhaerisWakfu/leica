@@ -6,7 +6,7 @@ package com.gitee.leica.exception;
  */
 public class ExternalException extends RuntimeException {
 
-    public ExternalException(String message, Object... args) {
-        super(String.format(message, args));
+    public ExternalException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 }

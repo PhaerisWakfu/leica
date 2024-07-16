@@ -2,8 +2,6 @@
 <!DOCTYPE configuration>
 <configuration>
 
-    <define name="ip" class="com.gitee.leica.config.LogIpPropertyConfig"/>
-
     <!--日志输出到文件-->
     <property name="LOG_PATH" value="/leica/logs/"/>
 
@@ -17,7 +15,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily 配置日志所生成的目录以及生成文件名的规则 -->
-            <fileNamePattern>${LOG_PATH}/${ip}_log-total-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/log-total-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- 单个日志文件最多MB -->
                 <maxFileSize>100MB</maxFileSize>
@@ -37,7 +35,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily 配置日志所生成的目录以及生成文件名的规则 -->
-            <fileNamePattern>${LOG_PATH}/${ip}_log-error-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/log-error-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- 单个日志文件最多MB -->
                 <maxFileSize>100MB</maxFileSize>
