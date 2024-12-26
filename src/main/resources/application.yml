@@ -1,20 +1,6 @@
 server:
   port: 8080
 
-spring:
-  application:
-    name: ${spring.profiles.active}-leica
-  profiles:
-    active: dev
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-  servlet:
-    multipart:
-      max-file-size: 2MB
-      max-request-size: 1MB
-      enabled: true
-
 logging:
   level:
     root: info
