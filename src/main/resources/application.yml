@@ -18,3 +18,10 @@ spring:
 logging:
   level:
     root: info
+
+#leica:
+#  web-driver:
+#    #下载的浏览器驱动所在路径
+#    driver-path: /xxx
+#    #浏览器所在路径
+#    binary-path: /xxx

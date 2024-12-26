@@ -1,7 +1,6 @@
 package com.gitee.leica.tools;
 
 import com.gitee.leica.config.LeicaProperties;
-import com.gitee.leica.exception.ExternalException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,7 +96,7 @@ public class WebDriverContext {
             ImageIO.write(image, FORMAT, os);
             log.info("截图耗时 ==> [{}]ms", System.currentTimeMillis() - start);
         } catch (Exception e) {
-            throw new ExternalException("截图失败", e);
+            throw new RuntimeException("截图失败", e);
         } finally {
             //因为是每次新建, 所以这里每次都关闭所有窗口关闭会话
             driver.quit();
@@ -122,6 +121,7 @@ public class WebDriverContext {
         chromeOptions.addArguments("--no-zygote");//处理僵尸进程
         chromeOptions.addArguments("--single-process");//开启单进程
         chromeOptions.addArguments("--disable-cache");//禁用缓存
+        chromeOptions.setExperimentalOption("detach", true);//后台运行
         return new ChromeDriver(chromeOptions);
     }
 }

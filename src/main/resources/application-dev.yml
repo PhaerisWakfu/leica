@@ -1,8 +1,0 @@
-logging:
-  level:
-    com.wehichina.leica: debug
-
-#leica:
-#  web-driver:
-#    driver-path: /xxx
-#    binary-path: /xxx
