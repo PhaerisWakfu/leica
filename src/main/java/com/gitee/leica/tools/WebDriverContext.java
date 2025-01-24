@@ -74,6 +74,9 @@ public class WebDriverContext {
             //请求页面
             driver.get(url);
 
+            AShot aShot = new AShot()
+                    .coordsProvider(new WebDriverCoordsProvider());
+
             //如果滚动截图计算设置真实高度
             if (height == null) {
                 String script = Optional.ofNullable(ele)
@@ -82,12 +85,9 @@ public class WebDriverContext {
                 Long offsetHeight = (Long) ((JavascriptExecutor) driver).executeScript(script);
                 h = offsetHeight != null && offsetHeight > 0 ? offsetHeight.intValue() + 100 : h;
                 driver.manage().window().setSize(new Dimension(w, h));
+                aShot.shootingStrategy(ShootingStrategies.viewportPasting(100));
             }
 
-            AShot aShot = new AShot()
-                    .coordsProvider(new WebDriverCoordsProvider());
-            //如果滚动截图设置滚动策略
-            Optional.ofNullable(height).ifPresent(x -> aShot.shootingStrategy(ShootingStrategies.viewportPasting(100)));
             BufferedImage image = Optional.ofNullable(ele)
                     .map(e -> aShot.takeScreenshot(driver, driver.findElement(By.cssSelector(e))))
                     .orElse(aShot.takeScreenshot(driver))
